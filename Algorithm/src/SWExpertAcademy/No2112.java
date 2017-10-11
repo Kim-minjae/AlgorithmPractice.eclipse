@@ -40,69 +40,86 @@ public class No2112 {
 			}
 			
 			MapInfo starter = new MapInfo(map1.clone(),0,new int[d],0);
+			starter.setMin_serial();
+			
+			if(starter.min_serial >= k) {
+				System.out.println("#"+(t+1)+" " +0);
+				continue;
+			}
+			
 			mapQ.offer(starter);
 			
-			
-			int count = 0;
-			while(!mapQ.isEmpty()){
+			Loop1 : while(!mapQ.isEmpty()){
 			
 				MapInfo tmpMap = mapQ.poll();
 				
-				
-				
-				boolean allchekerpoint = allChecker(tmpMap.map);
-				
-				if(allchekerpoint){
-					System.out.println("#"+(t+1)+" " +tmpMap.depth);
-					break;
-				}
 				if(tmpMap.depth == k) continue;
-				
 				
 				for(int i = tmpMap.last; i<d; i++){
 					if(tmpMap.visit[i] == 0){
 						MapInfo tmpMapA = new MapInfo(tmpMap.map.clone(), tmpMap.depth+1, tmpMap.visit.clone(),i+1);
 						tmpMapA.colorlingA(i);
-						tmpMapA.visitA(i);
-						mapQ.offer(tmpMapA);
+						tmpMapA.setMin_serial();
+						
+						if( tmpMapA.min_serial == k){
+							System.out.println("#"+(t+1)+" " +tmpMapA.depth);
+							break Loop1;
+						}if(tmpMapA.min_serial >= tmpMap.min_serial) {
+							tmpMapA.visitA(i);
+							mapQ.offer(tmpMapA);
+						}
 											
 						MapInfo tmpMapB = new MapInfo(tmpMap.map.clone(), tmpMap.depth+1,tmpMap.visit.clone(),i+1);
 						tmpMapB.colorlingB(i);
-						tmpMapB.visitB(i);
-						mapQ.offer(tmpMapB);
+						tmpMapB.setMin_serial();
+						
+						if( tmpMapB.min_serial == k){
+							System.out.println("#"+(t+1)+" " +tmpMapB.depth);
+							break Loop1;
+						}
+						
+						if(tmpMapB.min_serial >= tmpMap.min_serial) {
+							tmpMapB.visitB(i);
+							mapQ.offer(tmpMapB);
+						}
 					}
 				}
-			}
-		}
+			}	
+		}	
 	}
-	public static boolean allChecker(int[][] arr){
-		boolean result = true;
+	public static int allChecker(int[][] arr){
+		int result = d;
 		for(int j=0; j<w; j++){
-			if(!checker(arr,j))return false;
+			result = Math.min(checker(arr,j), result);
 		}
 		return result;
 	}
 	
-	public static boolean checker(int[][] arr, int j){
-		boolean result = false;
+	public static int checker(int[][] arr, int j){
+		int result = 0;
 		
 		int a = 0;
+		int maxA = 0;
+		
 		int b = 0;
+		int maxB = 0;
 		
 		for(int i =0; i<d; i++){
 			
 			if(arr[i][j] == 0){
 				a++;
 				b=0;
+				maxA = Math.max(a, maxA);
 			}
 			if(arr[i][j] == 1){
 				b++;
 				a=0;
+				maxB = Math.max(b, maxB);
+
 			}
-			if((a==k)||(b==k)) return true;
 		}
 		
-		return result;
+		return result = Math.max(maxA, maxB);
 	}
 	
 	static class MapInfo{
@@ -110,6 +127,8 @@ public class No2112 {
 		int depth;
 		int[] visit;
 		int last;
+		int min_serial;
+		
 		public MapInfo(int[][] cloneMap, int depth, int[] visit, int last) {
 			super();
 			this.map = new int[cloneMap.length][cloneMap[0].length];
@@ -135,6 +154,9 @@ public class No2112 {
 		}
 		public void visitB(int i){
 			this.visit[i] = 2;
+		}
+		public void setMin_serial() {
+			min_serial = allChecker(this.map);
 		}
 		
 	}
