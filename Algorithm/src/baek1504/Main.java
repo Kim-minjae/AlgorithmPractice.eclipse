@@ -64,8 +64,9 @@ public class Main {
 		PriorityQueue<Man> priorityQueueB = new PriorityQueue<>();
 		
 		priorityQueueA.offer(new Man(a,0));
+		dpA[a] = 0;
 		priorityQueueB.offer(new Man(b,0));
-
+		dpB[b] = 0;
 		//첫번째 두개의 중간지점이 MaxValue 일 경우 while문 계속 돌리고 아닐경우 다음으로 넘어감.
 		//만일 두번째 중간지점을 가기위해 무조건 첫번째 중간지점을 지나가야 한다고 한다면 ? 혹시모르니 
 	
@@ -74,7 +75,6 @@ public class Main {
 			
 			int tmpAvertex = tmpManA.vertex;
 			long tmpAcost = tmpManA.cost;
-			dpA[tmpAvertex] = tmpAcost;
 			
 			for(int x : adjacent[tmpAvertex]) {
 				if((dpA[x] > (tmpManA.cost+adjacentCost[tmpAvertex][x]))) {
@@ -91,7 +91,6 @@ public class Main {
 			
 			int tmpBvertex = tmpManB.vertex;
 			long tmpBcost = tmpManB.cost;
-			dpB[tmpBvertex] = tmpBcost;
 			
 			for(int x : adjacent[tmpBvertex]) {
 				if((dpB[x] > (tmpManB.cost+adjacentCost[tmpBvertex][x]))) {
