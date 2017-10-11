@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -50,25 +51,41 @@ public class Main {
 				adjacentCost[from][to] = cost;
 				
 			}
+			Cave resultCave = dfs(1);
 			
-			
+			System.out.println(resultCave.cost + " " + resultCave.order.size());
+			for(int i = resultCave.order.size()-1; i>=0; i--){
+				System.out.print(resultCave.order.get(i)+ " ");
+			}
+			System.out.println();
 			
 		}
 		
 	}
 	public static Cave dfs(int vertex){
 		
-		ArrayList tmpArray = new ArrayList<>();
-		tmpArray.add(vertex);
-		Cave tmpCave = new Cave(vertex,cave[vertex],tmpArray);
-		
-		for(int x : adjacent[vertex]){
-			
+		if(adjacent[vertex].size() == 0){
+			ArrayList tmpArray = new ArrayList<>();
+			tmpArray.add(vertex);
+			return new Cave(vertex,cave[vertex],tmpArray);
 		}
+		
+		ArrayList<Cave> caves = new ArrayList<>();
+
+		for(int x : adjacent[vertex]){
+			Cave tmpCave = dfs(x);
+			tmpCave.cost += cave[vertex] - adjacentCost[vertex][x];
+			caves.add(tmpCave);
+		}
+		
+		Cave tmpCave = Collections.max(caves);
+		tmpCave.order.add(vertex);
+		
+		return tmpCave;
 		
 	}
 	
-	static class Cave{
+	static class Cave implements Comparable<Cave>{
 		int vertex;
 		int cost;
 		ArrayList<Integer> order;
@@ -78,5 +95,11 @@ public class Main {
 			this.cost = cost;
 			this.order = order;
 		}
+		@Override
+		public int compareTo(Cave o) {
+			// TODO Auto-generated method stub
+			return this.cost - o.cost;
+		}
+		
 	}
 }
