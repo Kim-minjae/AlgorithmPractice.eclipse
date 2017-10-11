@@ -49,10 +49,12 @@ public class No2112 {
 			
 			mapQ.offer(starter);
 			
+			int max = 0;
+			
 			Loop1 : while(!mapQ.isEmpty()){
 			
 				MapInfo tmpMap = mapQ.poll();
-				
+				max = Math.max(max, tmpMap.min_serial);
 				if(tmpMap.depth == k) continue;
 				
 				for(int i = tmpMap.last; i<d; i++){
@@ -64,7 +66,7 @@ public class No2112 {
 						if( tmpMapA.min_serial == k){
 							System.out.println("#"+(t+1)+" " +tmpMapA.depth);
 							break Loop1;
-						}if(tmpMapA.min_serial >= tmpMap.min_serial) {
+						}if(tmpMapA.min_serial >= max) {
 							tmpMapA.visitA(i);
 							mapQ.offer(tmpMapA);
 						}
@@ -78,7 +80,7 @@ public class No2112 {
 							break Loop1;
 						}
 						
-						if(tmpMapB.min_serial >= tmpMap.min_serial) {
+						if(tmpMapB.min_serial >= max) {
 							tmpMapB.visitB(i);
 							mapQ.offer(tmpMapB);
 						}
